@@ -20,5 +20,5 @@ public interface IApprovedTransactionsRepository extends JpaRepository<ApprovedT
             "t.status AS status " +
             "FROM student s JOIN student_transaction t ON s.id = t.studentId " +
             "WHERE s.registrationNumber = :registerNo")
-    ITransactionProjection getTransactionDetails(@Param("registerNo") String registerNo);
+    List<ITransactionProjection> getTransactionDetails(@Param("registerNo") String registerNo);
 }

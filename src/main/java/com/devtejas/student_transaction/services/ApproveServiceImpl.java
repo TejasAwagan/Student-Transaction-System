@@ -8,10 +8,15 @@ import com.devtejas.student_transaction.projection.ITransactionProjection;
 import com.devtejas.student_transaction.repository.IApprovedTransactionsRepository;
 import com.devtejas.student_transaction.repository.IStudentFeesRepository;
 import com.devtejas.student_transaction.repository.IStudentTransactionRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -120,9 +125,29 @@ public class ApproveServiceImpl implements IAdminApproveService{
     public List<ITransactionProjection> getTransactionDetail(String registerNo) {
 //        var response = new CommonHttpResponse<List<ITransactionProjection>>();
 
-        return (List<ITransactionProjection>) approvedTransactionRepository.getTransactionDetails(registerNo);
-
+        var result= approvedTransactionRepository.getTransactionDetails(registerNo);
+        return result;
 
     }
+
+    @Override
+    public Map<String, Object> getAdminDetails(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+
+        String username = jwt.getClaimAsString("preferred_username");
+        String email = jwt.getClaimAsString("email");
+
+        List<String> roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
+        Map<String, Object> details = new HashMap<>();
+        details.put("username", username);
+        details.put("email", email);
+        details.put("roles", roles);
+
+        return details;
+    }
+
 
 }
