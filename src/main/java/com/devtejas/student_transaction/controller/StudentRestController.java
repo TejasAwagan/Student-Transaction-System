@@ -22,6 +22,7 @@ public class StudentRestController {
 
     @GetMapping("/getallstudent")
     public CommonHttpResponse<List<Student>> getAllStudent(){
+
         return studentService.getAllStudent();
     }
 
